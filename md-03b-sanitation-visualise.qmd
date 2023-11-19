@@ -1,7 +1,7 @@
 ---
 title: "Data transformation with dplyr"
 subtitle: "And make a plot"
-author: ""
+author: "Joseph Lwere"
 format:
   html:
     embed-resources: true
@@ -44,9 +44,10 @@ sanitation <- read_csv("data/jmp_wld_sanitation_long.csv")
 
 1.  Run all code chunks above.
 2.  Use the `glimpse()` function to get an overview of the data set.
-3.  How many variables are in the data set?
+3.  How many variables are in the data set? \# 8 Variables
 
 ```{r}
+glimpse(sanitation)
 
 ```
 
@@ -55,7 +56,8 @@ sanitation <- read_csv("data/jmp_wld_sanitation_long.csv")
 1.  Use the `count()` function with varname_short and varname_long to identify the definitions of the levels in these two variables.
 
 ```{r}
-
+sanitation %>% 
+  count(varname_short, varname_long)
 ```
 
 ## Task 3
@@ -69,7 +71,16 @@ sanitation <- read_csv("data/jmp_wld_sanitation_long.csv")
 2.  Store the result as a new object in your environment with a name of your choice.
 
 ```{r}
+sanitation_UGA <- sanitation %>% 
+  filter(iso3 == 'UGA',
+         year %in% c(2000, 2020),
+         varname_long != 'safely managed sanitation services')
 
+
+```
+
+```{r}
+glimpse(sanitation_UGA)
 ```
 
 ## Task 4
@@ -77,7 +88,8 @@ sanitation <- read_csv("data/jmp_wld_sanitation_long.csv")
 1.  Use the `count()` function with the data you created in Task 3 to verify that year 2000 and 2020 remained in the year variable.
 
 ```{r}
-
+sanitation_UGA %>% 
+  count(year)
 ```
 
 ## Task 5
@@ -100,21 +112,31 @@ geom_text(aes(label = round(percent, 1)),
 ```
 
 ```{r}
-
+ggplot(data = sanitation_UGA,
+       aes(x = residence,
+           y = percent,
+           fill= varname_long))+
+geom_col()+
+  facet_wrap(~year)+
+  scale_fill_colorblind()+
+geom_text(aes(label = round(percent, 1)), 
+          position = position_stack(vjust = 0.5),
+          size = 3,
+          color = "white")
 ```
 
 ## Task 6
 
 If you haven't worked with JMP indicators before, the following questions will be challenging to answer.
 
-1.  Look at the plot that you created. What do you notice about the order of the bars / order of the legend?
-2.  What would you want to change?
-3.  Why did we remove "safely managed sanitation services" from the data set in Task 3?
+1.  Look at the plot that you created. What do you notice about the order of the bars / order of the legend? \# In Uganda's context there is still a big problem of unimproved sanitation facilities. Though there has been an improvement from 2000 to 2020, but it is just 0.9 improvement nation wide.
+2.  What would you want to change? \# I would increase funding and would implore the Ministry of Health to intervene with purpose and tangible plans and solutions.
+3.  Why did we remove "safely managed sanitation services" from the data set in Task 3? \# From the graph it is evident that the percentage of safely managed sanitation services is negligable at 0%.
 
 ## Task 7
 
 1.  Run the code in the code chunk below.
-2.  What do you observe when you look at the code and plot?
+2.  What do you observe when you look at the code and plot? #Basic sanitation has improved globally according to the graphs.
 
 ```{r}
 
